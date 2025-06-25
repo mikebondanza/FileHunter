@@ -9,17 +9,13 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Telerik.WinControls;
-using Telerik.WinControls.Themes;
 using Telerik.WinControls.UI;
-using System.Threading;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
 
 namespace FileHunter
 {
 
-    public partial class MainFrm : Telerik.WinControls.UI.RadForm
+    public partial class MainFrm : RadForm
     {
         public static string ImgSrcVal = string.Empty;
         public static string ImgDstVal = string.Empty;
@@ -37,26 +33,29 @@ namespace FileHunter
         }
 
         // Root Path to search for files in
+        [STAThread]
         private void radButton2_Click(object sender, EventArgs e)
         {
             radOpenFolderDialog1.OpenFolderDialogForm.ThemeName = frmTheme;
             radOpenFolderDialog1.InitialDirectory = DownloadFolder();
-            radOpenFolderDialog1.ShowDialog();
+            Invoke((Action)(() => { radOpenFolderDialog1.ShowDialog(); }));
             lblImgSrc.Text = radOpenFolderDialog1.FileName;
         }
 
         // Destination to copy files to
+        [STAThread]
         private void radButton3_Click(object sender, EventArgs e)
         {
             radOpenFolderDialog2.OpenFolderDialogForm.ThemeName = frmTheme;
             radOpenFolderDialog2.InitialDirectory = DownloadFolder();
-            radOpenFolderDialog2.ShowDialog();
+            Invoke((Action)(() => { radOpenFolderDialog2.ShowDialog(); }));
             lblImgDest.Text = radOpenFolderDialog2.FileName;
         }
 
         // Text document of files to search for.
         // One file name or partial file name per line
         // Individual lines can be treated as rename items with the following syntax [filename]:[newname]
+        [STAThread]
         private void radButton4_Click(object sender, EventArgs e)
         {
             radOpenFileDialog1.OpenFileDialogForm.ThemeName = frmTheme;
@@ -74,6 +73,7 @@ namespace FileHunter
         /// <summary>
         /// main button to execute the search for files.
         /// </summary>
+        [STAThread]
         private async void radButton1_Click(object sender, EventArgs e)
         {
             progressBar1.Value = 0;
@@ -164,6 +164,8 @@ namespace FileHunter
         /// <param name="srchFile"></param>
         /// <param name="dirSrc"></param>
         /// <param name="dirDest"></param>
+        /// 
+        [STAThread]
         private void HuntForFile(string srchFile, string dirSrc, string dirDest)
         {
             string partialName = srchFile.Replace("\r", "").Trim();
